@@ -1,0 +1,31 @@
+class Solve {
+    int[] findTwoElement(int arr[], int n) {
+        int xor = 0;
+        for(int i : arr)
+            xor ^= i;
+        for(int i = 1; i <= n; i++)
+            xor ^= i;
+        int set_bit = xor & ~(xor - 1);
+        int x = 0;
+        int y = 0;
+        for(int i : arr) {
+            if((set_bit & i) != 0)
+                x ^= i;
+            else
+                y ^= i;
+        }
+        for(int i = 1; i <= n; i++) {
+            if((set_bit & i) != 0)
+                x ^= i;
+            else
+                y ^= i;
+        }
+        for(int i : arr) {
+            if(i == x) 
+                return new int[]{x,y};
+            if(i == y)
+                return new int[]{y,x};
+        }
+        return arr;
+    }
+}
