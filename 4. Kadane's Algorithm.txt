@@ -1,0 +1,11 @@
+class Solution {
+    public int maxSubArray(int[] nums) {
+        int meh = 0;
+        int msf = Integer.MIN_VALUE;
+        for(int i : nums) {
+            meh = Math.max(i,meh + i);
+            msf = Math.max(msf,meh);
+        }
+        return msf;
+    }
+}
