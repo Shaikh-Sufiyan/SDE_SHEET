@@ -1,0 +1,49 @@
+class Solution {
+    public List<List<String>> solveNQueens(int n) {
+        
+        List<List<String>> res = new ArrayList<>();
+        List<List<Integer>> ans = new ArrayList<>();
+        queen(0,n,new ArrayList<>(),ans);
+        resultPattern(ans,res,n);
+        return res;
+        
+    }
+    
+    public void queen(int row, int n, ArrayList<Integer> ds, List<List<Integer>> ans) {
+        if(row == n) {
+            ans.add(new ArrayList<>(ds));
+            return;
+        }
+        for(int col = 0; col < n; col++) {
+            ds.add(col);
+            if(isValid(ds)) 
+                queen(row + 1,n,ds,ans);
+            ds.remove(ds.size() - 1);
+        }
+    }
+    
+    public boolean isValid(ArrayList<Integer> ds) {
+        int rowId = ds.size() - 1;
+        for(int i = 0; i < rowId; i++) {
+            int diff = Math.abs(ds.get(i) - ds.get(rowId));
+            if(diff == 0 || diff == rowId - i)
+                return false;
+        }
+        return true;
+    }
+    
+    public void resultPattern(List<List<Integer>> ans, List<List<String>> res, int n) {
+        for(List<Integer> list : ans) {
+            List<String> l = new ArrayList<>();
+            for(int i : list) {
+                StringBuilder s = new StringBuilder();
+                for(int j = 0; j < n; j++)
+                    s.append(".");
+                s.replace(i,i+1,"Q");
+                l.add(s.toString());
+            }
+            res.add(l);
+            
+        }
+    }
+}
