@@ -1,0 +1,41 @@
+public class Solution {
+    public int books(ArrayList<Integer> A, int B) {
+        if(B > A.size())
+            return -1;
+        int high = 0;
+        int low = A.get(0);
+        int res = -1;
+        for(int i : A) {
+            high += i;
+            low = Math.min(low,i);
+        }
+        while(low <= high) {
+            int mid = low + (high - low) / 2;
+            if(isPossible(mid,A,B)) {
+                res = mid;
+                high = mid - 1;
+            }
+            else {
+                low = mid + 1;
+            }
+        }
+        return low;
+    }
+
+    public boolean isPossible(int mid, ArrayList<Integer> A, int B) {
+        int students = 1;
+        int pages = 0;
+        for(int i : A) {
+            if(i > mid)
+                return false;
+           if(pages + i > mid) {
+                students++;
+                pages = i;
+            }
+            else {
+                pages += i;
+            }
+        }
+        return (students <= B);
+    }
+}

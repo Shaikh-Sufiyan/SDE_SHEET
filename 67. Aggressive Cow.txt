@@ -1,0 +1,64 @@
+import java.util.*;
+import java.lang.*;
+import java.io.*;
+
+class Main
+{
+	public static void main (String[] args) throws IOException
+	{
+		try {
+			BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+			int t = Integer.parseInt(br.readLine().trim());
+			while(t-- > 0) {
+				String[] line = br.readLine().trim().split(" ");
+				int n = Integer.parseInt(line[0]);
+				int k = Integer.parseInt(line[1]);
+				int[] arr = new int[n];
+				for(int i = 0; i < n; i++) {
+					arr[i] = Integer.parseInt(br.readLine().trim());
+				}
+				Arrays.sort(arr);
+				int result = aggressiveCow(arr,n,k);
+				System.out.println(result);
+			}
+			
+		}
+		
+		catch(Exception e){
+	        return;
+	    }
+		
+	}
+	
+	public static int aggressiveCow(int[] arr, int n, int k) {
+		int low = 1;
+		int high = arr[n - 1] - arr[0];
+		int res = -1;
+		while(low <= high) {
+			int mid = low + (high - low) / 2;
+			if(canPlaceCow(arr,k,mid)) {
+				res = mid;
+				low = mid + 1;
+			}
+			else {
+				high = mid - 1;
+			}
+		}
+		return res;
+	}
+	
+	public static boolean canPlaceCow(int[] arr, int k, int mid) {
+		int cor = arr[0];
+		int cow = 1;
+		for(int i = 1; i < arr.length; i++) {
+			if((arr[i] - cor) >= mid) {
+				cow++;
+				cor = arr[i];
+			}
+			if(cow == k)
+				return true;
+		}
+		return false;
+	}
+	
+}
