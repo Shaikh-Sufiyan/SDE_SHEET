@@ -1,0 +1,15 @@
+public class Solution {
+    public static int square(int n) {
+        n = Math.abs(n);
+	int res = 0;
+	int pos = 0;
+	int temp_n = n;
+	while(n != 0) {
+		if(n & 1)
+			res += temp_n << pos;
+		pos++;
+		n = n >> 1;
+	}
+	return res;
+    }
+}

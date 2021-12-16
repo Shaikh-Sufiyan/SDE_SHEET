@@ -1,0 +1,16 @@
+public class Solution {
+    public int solve(int A) {
+        if(A == 0)
+            return 0;
+        long a = powerOf(A);
+        long b = (long)Math.pow(2,a - 1);
+        long d = (long)Math.pow(2,a);
+        long c = (b * a) + (A - d + 1) + solve(A - (int)d);
+        return (int)(c % 1000000007);
+
+    }
+    public long powerOf(int A) {
+        long p = (long)(Math.log(A)/Math.log(2));
+        return p;
+    }
+}
