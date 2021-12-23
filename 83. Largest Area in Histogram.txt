@@ -1,0 +1,67 @@
+2 Pass Solution : Optimal 
+
+class Solution {
+    public int largestRectangleArea(int[] heights) {
+        int n = heights.length; 
+        Stack<Integer> st = new Stack<>();
+        int leftSmall[] = new int[n]; 
+        int rightSmall[] = new int[n]; 
+        for(int i = 0;i<n;i++) {
+            while(!st.isEmpty() && heights[st.peek()] >= heights[i]) {
+                st.pop(); 
+            }
+            
+            if(st.isEmpty()) leftSmall[i] = 0; 
+            else leftSmall[i] = st.peek() + 1; 
+            st.push(i); 
+        }
+        
+        // clear the stack to be re-used
+        while(!st.isEmpty()) st.pop(); 
+        
+        for(int i = n-1;i>=0;i--) {
+            while(!st.isEmpty() && heights[st.peek()] >= heights[i]) {
+                st.pop(); 
+            }
+            
+            if(st.isEmpty()) rightSmall[i] = n-1; 
+            else rightSmall[i] = st.peek() - 1;
+            
+            st.push(i); 
+        }
+        
+        int maxA = 0; 
+        for(int i = 0;i<n;i++) {
+            maxA = Math.max(maxA, heights[i] * (rightSmall[i] - leftSmall[i] + 1));
+        }
+        return maxA; 
+        
+    }
+}
+
+1 Pass Solution : Most Optimal (tell this in interview if asked otherwise 2 pass solution is good)
+
+class Solution {
+    public int largestRectangleArea(int[] heights) {
+        int maxA = 0;
+        Stack<Integer> stack = new Stack<>();
+        int n = heights.length;
+        for(int i = 0; i <= n; i++) {
+            while(!stack.isEmpty() && (i == n || heights[i] <= heights[stack.peek()])) {
+                int height = heights[stack.peek()];
+                stack.pop();
+                int width;
+                if(!stack.isEmpty()) {
+                    width = i - stack.peek() - 1;
+                }
+                else {
+                    width = i;
+                }
+                maxA = Math.max(maxA, height * width);
+            }
+            stack.push(i);
+        }
+        return maxA;
+        
+    }
+}
