@@ -1,0 +1,38 @@
+class match
+{
+    static int d= 256;
+    //Function to check if the pattern is present in string or not.
+    static boolean search(String pat, String txt, int q)
+    {
+        int h = 1;
+        int m = pat.length();
+        int n = txt.length();
+        for(int i = 1; i < m; i++)
+            h = (h * d) % q;
+        int p = 0;
+        int t = 0;
+        for(int i = 0; i < m; i++) {
+            t = (t * d + txt.charAt(i)) % q;
+            p = (p * d + pat.charAt(i)) % q;
+        }
+        for(int i = 0; i <= n - m; i++) {
+            int j = 0;
+            if(p == t) {
+                for(j = 0; j < m; j++) {
+                    if(pat.charAt(j) != txt.charAt(i + j))
+                        break;
+            } 
+            }
+            if(j == m)
+                return true;
+            if(i < n - m) {
+                t = ((d * (t - txt.charAt(i) * h) + txt.charAt(i + m))) % q;
+                if(t < 0)
+                    t += q;
+            }
+        }
+        return false;
+    }
+}
+
+q = Prime number to avoid spurious hit(same hash value but string are different w.r.t. position of characters)
