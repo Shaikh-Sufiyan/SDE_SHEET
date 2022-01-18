@@ -1,0 +1,27 @@
+class match
+{
+    //Function to fill lps[] for given patttern pat[0..M-1]. 
+    void computeLPSArray(String pat, int M, int lps[]) 
+    { 
+	    int len = 0;
+	    int i = 1;
+	    lps[0] = 0;
+	    while(i < M) {
+	        if(pat.charAt(i) == pat.charAt(len)) {
+	            len++;
+	            lps[i] = len;
+	            i++;
+	        }
+	        else {
+	            if(len == 0) {
+	                lps[i] = 0;
+	                i++;
+	            }
+	            else
+	                len = lps[len - 1];
+	        }
+	    }
+	
+    }
+    
+}
