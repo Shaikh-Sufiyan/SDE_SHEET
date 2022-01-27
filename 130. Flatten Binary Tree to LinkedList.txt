@@ -1,0 +1,72 @@
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+
+Recursive : TC : O(N), SC : O(N)
+
+class Solution {
+    TreeNode prev = null;
+    public void flatten(TreeNode root) {
+        
+        if(root == null)
+            return;
+        flatten(root.right);
+        flatten(root.left);
+        root.left = null;
+        root.right = prev;
+        prev = root;
+    }
+}
+
+Iterative : TC : O(N), SC : O(N)
+
+class Solution {
+    public void flatten(TreeNode root) {
+        if(root == null)
+            return;
+        Stack<TreeNode> stack = new Stack<>();
+        stack.push(root);
+        while(!stack.isEmpty()) {
+            TreeNode current = stack.pop();
+            if(current.right != null)
+                stack.push(current.right);
+            if(current.left != null)
+                stack.push(current.left);
+            if(!stack.isEmpty())
+                current.right = stack.peek();
+            current.left = null;
+        }
+    }
+}
+
+Iterative : TC : O(N), SC : O(1)
+
+class Solution {
+    public void flatten(TreeNode root) {
+        TreeNode current = root;
+        while(current != null) {
+            if(current.left != null) {
+                TreeNode left = current.left; //to traverse to rightmost of left subtree
+                while(left.right != null)
+                    left = left.right;
+                left.right = current.right;
+                current.right = current.left;
+                current.left = null;
+            }
+            current = current.right;
+        }
+    }
+}
+
