@@ -1,0 +1,65 @@
+/************************************************************
+
+    Following is the TreeNode class structure
+
+    class TreeNode<T>
+    {
+       public:
+        T data;
+        TreeNode<T> left;
+        TreeNode<T> right;
+
+        TreeNode(T data)
+        {
+            this.data = data;
+            left = null;
+            right = null;
+        }
+    };
+
+************************************************************/
+Ceil : 
+
+public class Solution {
+
+    public  static int findCeil(TreeNode<Integer> node, int x) {
+
+        int ceil = -1;
+        while(node != null) {
+            if(node.data == x) {
+                ceil = node.data;
+                return ceil;
+            }
+            if(x < node.data) {
+                ceil = node.data;
+                node = node.left;
+            }
+            else
+                node = node.right;
+        }
+		return ceil;
+    }
+}
+
+Floor :
+
+public class Solution {
+
+    public static int floorInBST(TreeNode<Integer> root, int X) {
+        int floor = -1;
+        while(root != null) {
+            if(root.data == X) {
+                floor = root.data;
+                return floor;
+            }
+            else if(root.data > X) {
+		root = root.left;
+            }
+            else {
+		floor = root.data;
+                root = root.right;
+            }
+        }
+        return floor;
+    }
+}
