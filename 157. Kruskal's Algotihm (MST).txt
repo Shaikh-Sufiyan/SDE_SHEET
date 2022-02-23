@@ -1,0 +1,88 @@
+class Solution
+{
+    //Function to find sum of weights of edges of the Minimum Spanning Tree.
+    static class Graph {
+        int u;
+        int v;
+        int weight;
+        public Graph(int u, int v, int weight) {
+            this.u = u;
+            this.v = v;
+            this.weight = weight;
+        }
+    }
+    
+    static class SortComparator implements Comparator<Graph> {
+        @Override
+        public int compare(Graph g1, Graph g2) {
+            if(g1.weight < g2.weight)
+                return -1;
+            else if(g1.weight > g2.weight) 
+                return 1;
+            else
+                return 0;
+        }
+    }
+    static int spanningTree(int V, ArrayList<ArrayList<ArrayList<Integer>>> adj) 
+    {
+        int[] parent = new int[V];
+        int[] rank = new int[V];
+        for(int i = 0; i < V; i++) {
+            parent[i] = i;
+            rank[i] = 0;
+        }
+        ArrayList<Graph> graph = new ArrayList<>();
+        buildGraph(graph, adj);
+        Collections.sort(graph, new SortComparator());
+        int totalSum = 0;
+        for(Graph g : graph) {
+            int u = g.u;
+            int v = g.v;
+            int u_parent = findParent(u, parent);
+            int v_parent = findParent(v, parent);
+            if(u_parent != v_parent) {
+                totalSum += g.weight;
+                union(u, v, parent, rank);
+            }
+        }
+        return totalSum;
+        
+    }
+    
+    public static int findParent(int node, int[] parent) {
+        if(node == parent[node]) {
+            return node;
+        }
+        
+        return parent[node] = findParent(parent[node], parent);
+    }
+    public static void union(int u, int v, int[] parent, int[] rank) {
+        u = findParent(u, parent);
+        v = findParent(v, parent);
+        if(rank[u] < rank[v]) {
+            parent[u] = v;
+        }
+        else if(rank[v] < rank[u]) {
+            parent[v] = u;
+        }
+        else {
+            parent[u] = v;
+            rank[v]++;
+        }
+    }
+    
+    public static void buildGraph(ArrayList<Graph> graph, ArrayList<ArrayList<ArrayList<Integer>>> adj) {
+        for(int i = 0; i < adj.size(); i++) {
+            for(ArrayList<Integer> list : adj.get(i)) {
+                int u = i;
+                int v = list.get(0);
+                int weight = list.get(1);
+                graph.add(new Graph(u, v, weight));
+            }
+        }
+    }
+    
+}
+
+//TC : O(VlogV)(Sorting) + O(4 alpha)(find and union) = O(VlogV) + O(4) = O(VlogV)
+//SC : O(V)

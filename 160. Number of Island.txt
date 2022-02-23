@@ -1,0 +1,35 @@
+class Solution {
+    // Function to find the number of islands.
+    public int numIslands(char[][] grid) {
+        if(grid.length == 0)
+            return 0;
+        int numIsland = 0;
+        for(int i = 0; i < grid.length; i++) {
+            for(int j = 0; j < grid[i].length; j++) {
+                if(grid[i][j] == '1') {
+                    numIsland += calculateIsland(grid, i, j);
+                }
+            }
+        }
+        return numIsland;
+    }
+    
+    public static int calculateIsland(char[][] grid, int i, int j) {
+        if(i < 0 || i >= grid.length || j < 0 || j >= grid[i].length || grid[i][j] == '0') {
+            return 0;
+        }
+        grid[i][j] = '0';
+        calculateIsland(grid, i - 1, j);
+        calculateIsland(grid, i + 1, j);
+        calculateIsland(grid, i, j - 1);
+        calculateIsland(grid, i, j + 1);
+        calculateIsland(grid, i - 1, j - 1);
+        calculateIsland(grid, i + 1, j - 1);
+        calculateIsland(grid, i - 1, j + 1);
+        calculateIsland(grid, i + 1, j + 1);
+        return 1;
+    }
+}
+
+//Time Compelxity: O(n*m)
+//Space Compelxity: O(n*m)

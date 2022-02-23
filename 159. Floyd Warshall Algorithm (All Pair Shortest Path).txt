@@ -1,0 +1,23 @@
+class Solution
+{
+    public void shortest_distance(int[][] matrix)
+    {
+        int n = matrix.length;
+        for(int k = 0; k < n; k++) {
+            for(int i = 0; i < n; i++) {
+                for(int j = 0; j < n; j++) {
+                    if(matrix[i][k] == -1 || matrix[k][j] == -1) //if no path through intermediate goes to next path(iteration)
+                        continue;
+                    if(matrix[i][j] == -1) //if no path exist directly, check for intermediate
+                        matrix[i][j] = matrix[i][k] + matrix[k][j];
+                    else if(matrix[i][j] > matrix[i][k] + matrix[k][j]) {
+                        matrix[i][j] = matrix[i][k] + matrix[k][j];
+                    }
+                }
+            }
+        } 
+    }
+}
+
+//TC : O(N^3)
+//SC : O(1)

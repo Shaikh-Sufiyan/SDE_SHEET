@@ -1,0 +1,68 @@
+class Solution
+{
+    //Function to find number of strongly connected components in the graph.
+    public int kosaraju(int V, ArrayList<ArrayList<Integer>> adj)
+    {
+        int count = 0;
+        boolean[] visited = new boolean[V];
+        Arrays.fill(visited, false);
+        Stack<Integer> stack = new Stack<>();
+        for(int i = 0; i < V; i++) {
+            if(!visited[i]) {
+                dfsTopo(i, visited, adj, stack);
+            }
+        }
+        ArrayList<ArrayList<Integer>> adjTransposed = new ArrayList<>();
+        for(int i = 0; i < adj.size(); i++) {
+            adjTransposed.add(new ArrayList<>());
+        }
+        transposeGraph(adj, adjTransposed);
+        Arrays.fill(visited, false);
+        while(!stack.isEmpty()) {
+            int current = stack.pop();
+            if(!visited[current]) {
+                dfs(current, visited, adjTransposed);
+                count++;
+            }
+        }
+        return count;
+    }
+    
+    public static void dfsTopo(int i, boolean[] visited, ArrayList<ArrayList<Integer>> adj, Stack<Integer> stack) {
+        visited[i] = true;
+        for(int j : adj.get(i)) {
+            if(!visited[j]) {
+                dfsTopo(j, visited, adj, stack);
+            }
+        }
+        stack.push(i);
+    }
+    
+    public static void transposeGraph(ArrayList<ArrayList<Integer>> adj, ArrayList<ArrayList<Integer>> adjTransposed) {
+        for(int i = 0; i < adj.size(); i++) {
+            for(int j : adj.get(i)) {
+                adjTransposed.get(j).add(i);
+            }
+        }
+    }
+    
+    public static void dfs(int i, boolean[] visited, ArrayList<ArrayList<Integer>> adj) {
+        visited[i] = true;
+        for(int j : adj.get(i)) {
+            if(!visited[j]) {
+                dfs(j, visited, adj);
+            }
+        }
+    }
+    
+}
+/*
+Definition : A directed graph is strongly connected if there is a path between all pairs of vertices
+
+Steps :
+1. Topological sort
+2. Transpose Graph
+3. DFS(on stack generated using topological sort)
+*/
+//TC : O(V + E)
+//SC : O(V + E)
