@@ -1,0 +1,88 @@
+/*
+1) Trie(): Ninja has to initialize the object of this “TRIE” data structure.
+
+2) insert(“WORD”): Ninja has to insert the string “WORD”  into this “TRIE” data structure.
+
+3) countWordsEqualTo(“WORD”): Ninja has to return how many times this “WORD” is present in this “TRIE”.
+
+4) countWordsStartingWith(“PREFIX”): Ninjas have to return how many words are there in this “TRIE” that have the string “PREFIX” as a prefix.
+
+5) erase(“WORD”): Ninja has to delete this string “WORD” from the “TRIE”.
+*/
+
+import java.util.*;
+
+public class Trie {
+    class TrieNode {
+        HashMap<Character, TrieNode> children;
+        int count_word;
+        int count_prefix;
+        public TrieNode() {
+            children = new HashMap<>();
+            count_word = 0;
+            count_prefix = 0;
+        }
+    }
+    final TrieNode root;
+    public Trie() {
+        root = new TrieNode();
+    }
+
+    public void insert(String word) {
+        TrieNode current = root;
+        int len = word.length();
+        for(int i = 0; i < len; i++) {
+            char ch = word.charAt(i);
+            TrieNode node = current.children.get(ch);
+            if(node == null) {
+                node = new TrieNode();
+                current.children.put(ch, node);
+            }
+            node.count_prefix += 1;
+            current = node;
+        }
+        current.count_word += 1;
+    }
+
+    public int countWordsEqualTo(String word) {
+        TrieNode current = root;
+        int len = word.length();
+        for(int i = 0; i < len; i++) {
+            char ch = word.charAt(i);
+            TrieNode node = current.children.get(ch);
+            if(node == null) {
+                return 0;
+            }
+            current = node;
+        }
+        return current.count_word;
+    }
+
+    public int countWordsStartingWith(String word) {
+        TrieNode current = root;
+        int len = word.length();
+        for(int i = 0; i < len; i++) {
+            char ch = word.charAt(i);
+            TrieNode node = current.children.get(ch);
+            if(node == null) {
+                return 0;
+            }
+            current = node;
+        }
+        return current.count_prefix;
+    }
+
+    public void erase(String word) {
+        TrieNode current = root;
+        int len = word.length();
+        for(int i = 0; i < len; i++) {
+            char ch = word.charAt(i);
+            TrieNode node = current.children.get(ch);
+            node.count_prefix -= 1;
+            current = node;
+        }
+        current.count_word -= 1;
+    }
+
+}
+//TC : O(len_of_word)

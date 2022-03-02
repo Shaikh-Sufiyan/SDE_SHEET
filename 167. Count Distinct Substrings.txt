@@ -1,0 +1,46 @@
+
+import java.util.ArrayList;
+
+public class Solution 
+{
+
+	public static int countDistinctSubstrings(String s) 
+	{
+		int len = s.length();
+        int count = 0;
+        Trie obj = new Trie();
+        for(int i = 0; i < len; i++) {
+            String word = s.substring(i, len);
+            count += obj.insert(word);
+        }
+        return count + 1; //+1 for empty string
+	}
+}
+
+class Trie {
+    static class TrieNode {
+        TrieNode[] children;
+        public TrieNode() {
+            children = new TrieNode[26];
+        }
+    }
+    static TrieNode root;
+    public Trie() {
+        root = new TrieNode();
+    }
+    public static int insert(String word) {
+        int count = 0;
+        TrieNode current = root;
+        for(int i = 0; i < word.length(); i++) {
+            char ch = word.charAt(i);
+            if(current.children[ch - 'a'] == null) {
+                count++;
+                current.children[ch - 'a'] = new TrieNode();
+            }
+            current = current.children[ch - 'a'];
+		}
+        return count;
+    }
+}
+
+//TC : O(n^2)

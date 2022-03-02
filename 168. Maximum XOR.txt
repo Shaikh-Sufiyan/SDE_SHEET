@@ -1,0 +1,69 @@
+
+import java.util.ArrayList;
+
+public class Solution 
+{
+
+	public static int maxXOR(int n, int m, ArrayList<Integer> arr1, ArrayList<Integer> arr2) 
+	{
+	    int max = 0;
+        Trie obj = new Trie();
+        for(int i : arr1) {
+            obj.insert(i);
+        }
+        for(int i : arr2) {
+            max = Math.max(max, obj.maxVal(i));
+        }
+        return max;
+	}
+}
+
+class Trie {
+    class TrieNode {
+        TrieNode[] children;
+        public TrieNode() {
+            children = new TrieNode[2]; // 0 or 1
+        }
+        public boolean containsKey(int bit) {
+        return children[bit] != null;
+        }
+        public TrieNode getNode(int bit) {
+            return children[bit];
+        }
+        public void putNode(int bit, TrieNode node) {
+            children[bit] = node;
+        }
+    }
+    final TrieNode root;
+    public Trie() {
+        root = new TrieNode();
+    }
+    
+    public void insert(int num) {
+        TrieNode current = root;
+        for(int i = 31; i >= 0; i--) {
+            int bit = (num >> i) & 1; // to get bit at that position(to check it is set or not)
+            if(!current.containsKey(bit)) {
+                current.putNode(bit, new TrieNode());
+            }
+            current = current.getNode(bit);
+        }
+    }
+    public int maxVal(int num) {
+        TrieNode current = root;
+        int maxVal = 0;
+        for(int i = 31; i >= 0; i--) {
+            int bit = (num >> i) & 1;
+            if(current.containsKey(1 - bit)) { // checking opposite bit for max value
+                maxVal = maxVal | (1 << i); // to turn on that opposite bit to increase maxVal
+                current = current.getNode(1 - bit);
+            }
+            else {
+                current = current.getNode(bit);
+            }
+        }
+        return maxVal;
+    }
+    
+}
+//TC : O(N*32 + M*32) = O(N + M)

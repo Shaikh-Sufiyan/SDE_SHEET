@@ -1,0 +1,125 @@
+//Using HashMap to store
+
+class Trie {
+    
+    class TrieNode {
+        HashMap<Character, TrieNode> children;
+        boolean isEnd;
+        
+        public TrieNode() {
+            children = new HashMap<>();
+            isEnd = false;
+        }
+    }
+    final TrieNode root;
+    public Trie() {
+        root = new TrieNode();
+    }
+    
+    public void insert(String word) {
+        int len = word.length();
+        TrieNode current = root;
+        for(int i = 0; i < len; i++) {
+            char ch = word.charAt(i);
+            TrieNode node = current.children.get(ch);
+            if(node == null) {
+                node = new TrieNode();
+                current.children.put(ch, node);
+            }
+            current = node;
+        }
+        current.isEnd = true;
+    }
+    
+    public boolean search(String word) {
+        int len = word.length();
+        TrieNode current = root;
+        for(int i = 0; i < len; i++) {
+            char ch = word.charAt(i);
+            TrieNode node = current.children.get(ch);
+            if(node == null)
+                return false;
+            current = node;
+        }
+        return current.isEnd;
+    }
+    
+    public boolean startsWith(String prefix) {
+        int len = prefix.length();
+        TrieNode current = root;
+        for(int i = 0; i < len; i++) {
+            char ch = prefix.charAt(i);
+            TrieNode node = current.children.get(ch);
+            if(node == null)
+                return false;
+            current = node;
+        }
+        return true;
+    }
+}
+
+//TC : O(len_of_word)
+
+//Using Array of TrieNode
+
+class Trie {
+    
+    class TrieNode {
+        TrieNode[] children;
+        boolean isEnd;
+        
+        public TrieNode() {
+            children = new TrieNode[26];
+            isEnd = false;
+        }
+    }
+    final TrieNode root;
+    public Trie() {
+        root = new TrieNode();
+    }
+    
+    public void insert(String word) {
+        int len = word.length();
+        TrieNode current = root;
+        for(int i = 0; i < len; i++) {
+            char ch = word.charAt(i);
+            if(current.children[ch - 'a'] == null) {
+                current.children[ch - 'a'] = new TrieNode();
+            }
+            current = current.children[ch - 'a'];
+        }
+        current.isEnd = true;
+    }
+    
+    public boolean search(String word) {
+        int len = word.length();
+        TrieNode current = root;
+        for(int i = 0; i < len; i++) {
+            char ch = word.charAt(i);
+            if(current.children[ch - 'a'] == null)
+                return false;
+            current = current.children[ch - 'a'];
+        }
+        return current.isEnd;
+    }
+    
+    public boolean startsWith(String prefix) {
+        int len = prefix.length();
+        TrieNode current = root;
+        for(int i = 0; i < len; i++) {
+            char ch = prefix.charAt(i);
+            if(current.children[ch - 'a'] == null)
+                return false;
+            current = current.children[ch - 'a'];
+        }
+        return true;
+    }
+}
+
+/**
+ * Your Trie object will be instantiated and called as such:
+ * Trie obj = new Trie();
+ * obj.insert(word);
+ * boolean param_2 = obj.search(word);
+ * boolean param_3 = obj.startsWith(prefix);
+ */

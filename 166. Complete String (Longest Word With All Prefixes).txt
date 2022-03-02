@@ -1,0 +1,71 @@
+import java.util.*;
+class Solution {
+    
+
+  public static String completeString(int n, String[] a) {
+     Trie trie = new Trie();
+      for(int i = 0; i < n; i++) {
+          trie.insert(a[i]);
+      }
+      String longest = "";
+      for(int i = 0; i < n; i++) {
+          boolean check = trie.search(a[i]);
+          if(check) {
+              if(a[i].length() > longest.length()) {
+                  longest = a[i];
+              }
+              else if(a[i].length() == longest.length() && a[i].compareTo(longest) < 0) {
+                  longest = a[i];
+              }
+          }
+      }
+      return longest == "" ? "None" : longest;
+      
+
+  }
+}
+
+class Trie {
+    class TrieNode {
+        TrieNode[] children;
+        boolean isEnd;
+        public TrieNode() {
+            children = new TrieNode[26];
+            isEnd = false;
+        }
+	}
+    final TrieNode root;
+    public Trie() {
+        root = new TrieNode();
+    }
+    
+    public void insert(String word) {
+        TrieNode current = root;
+        int len = word.length();
+        for(int i = 0; i < len; i++) {
+            char ch = word.charAt(i);
+            if(current.children[ch - 'a'] == null) {
+                current.children[ch - 'a'] = new TrieNode();
+            }
+            current = current.children[ch - 'a'];
+        }
+        current.isEnd = true;
+    }
+    
+    public boolean search(String word) {
+        TrieNode current = root;
+        int len = word.length();
+        boolean flag = true;
+        for(int i = 0; i < len && flag; i++) {
+            char ch = word.charAt(i);
+            if(current.children[ch - 'a'] == null)
+                return false;
+            flag = flag & current.children[ch - 'a'].isEnd;
+            current =  current.children[ch - 'a'];
+        }
+        return flag;
+    }
+}
+
+//TC : O(n*avg_len_of_word)
+//SC : O(Sum(len_of_all_word))
