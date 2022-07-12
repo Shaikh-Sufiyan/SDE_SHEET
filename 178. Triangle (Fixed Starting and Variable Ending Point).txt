@@ -1,0 +1,72 @@
+/*
+Memoization :
+TC : O(n * n)
+SC : O(n * n) + O(n) (RecStack)
+*/
+
+import java.util.*;
+public class Solution {
+    public static int minimumPathSum(int[][] triangle, int n) {
+        int[][] dp = new int[n][n];
+        for(int[] i : dp)
+            Arrays.fill(i, -1);
+        return pathSum(0, 0, n, triangle, dp);
+    }
+    
+    public static int pathSum(int i, int j, int n, int[][] triangle, int[][] dp) {
+        if(i == n - 1)
+            return triangle[i][j];
+        if(dp[i][j] != -1)
+            return dp[i][j];
+        int down = triangle[i][j] + pathSum(i + 1, j, n, triangle, dp);
+        int diag = triangle[i][j] + pathSum(i + 1, j + 1, n, triangle, dp);
+        return dp[i][j] = Math.min(down, diag);
+    }
+}
+
+/*
+Tabulation:
+TC : O(n * n)
+SC : O(n * n) 
+*/
+
+public class Solution {
+    public static int minimumPathSum(int[][] triangle, int n) {
+        int[][] dp = new int[n][n];
+        for(int i = 0; i < n; i++) 
+            dp[n - 1][i] = triangle[n - 1][i];
+        for(int i = n - 2; i >= 0; i--) {
+            for(int j = i; j >= 0; j--) {
+                int down = triangle[i][j] + dp[i + 1][j];
+                int diag = triangle[i][j] + dp[i + 1][j + 1];
+                dp[i][j] = Math.min(down, diag);
+            }
+        }
+        return dp[0][0];
+    }
+}
+
+/*
+Space Optimization :
+TC : O(n * n)
+SC : O(n)
+*/
+
+import java.util.*;
+public class Solution {
+    public static int minimumPathSum(int[][] triangle, int n) {
+        int[] dp = new int[n];
+        for(int i = 0; i < n; i++) 
+            dp[i] = triangle[n - 1][i];
+        for(int i = n - 2; i >= 0; i--) {
+            int[] temp = new int[n];
+            for(int j = i; j >= 0; j--) {
+                int down = triangle[i][j] + dp[j];
+                int diag = triangle[i][j] + dp[j + 1];
+                temp[j] = Math.min(down, diag);
+            }
+            dp = temp.clone();
+        }
+        return dp[0];
+    }
+}

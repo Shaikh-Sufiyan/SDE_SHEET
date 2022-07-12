@@ -1,0 +1,100 @@
+/*
+Memoization
+TC : O(n * target)
+SC : O(n * target) + O(n)(RecStack)(much greater than O(n) due to repeating same coin)
+*/
+
+import java.util.*;
+public class Solution {
+    public static int minimumElements(int num[], int x) {
+        int n = num.length;
+        int[][] dp = new int[n][x + 1];
+        for(int[] i : dp)
+            Arrays.fill(i, -1);
+        int ans = calculate(n - 1, x, num, dp);
+        return ans >= 1e9 ? -1 : ans;
+    }
+    
+    public static int calculate(int index, int target, int[] num, int[][] dp) {
+        if(index == 0) {
+            if(target % num[index] == 0) // we can take 1 coin multople time
+                return target / num[index];
+            return (int)1e9;
+        }
+        if(dp[index][target] != -1)
+            return dp[index][target];
+        int not_take = calculate(index - 1, target, num, dp);
+        int take = Integer.MAX_VALUE;
+        if(num[index] <= target) {
+            take = 1 + calculate(index, target - num[index], num, dp);
+        }
+        return dp[index][target] = Math.min(take, not_take);
+    }
+
+}
+
+/*
+Tabulation
+TC : O(n * target)
+SC : O(n * target) 
+*/
+
+import java.util.*;
+public class Solution {
+    public static int minimumElements(int num[], int x) {
+        int n = num.length;
+        int[][] dp = new int[n][x + 1];
+        for(int target = 0; target <= x; target++) {
+            if(target % num[0] == 0)
+                dp[0][target] = target / num[0];
+            else
+                dp[0][target] = (int)1e9;
+        }
+        for(int index = 1; index < n; index++) {
+            for(int target = 0; target <= x; target++) {
+                int not_take = dp[index - 1][target];
+                int take = Integer.MAX_VALUE;
+                if(num[index] <= target) {
+                    take = 1 + dp[index][target - num[index]];
+                }
+                dp[index][target] = Math.min(take, not_take);
+
+            }
+        }
+        return dp[n - 1][x] >= 1e9 ? -1 : dp[n - 1][x];
+    }
+}
+
+/*
+Space Optimization
+TC : O(n * target)
+SC : O(target)
+*/
+
+import java.util.*;
+public class Solution {
+    public static int minimumElements(int num[], int x) {
+        int n = num.length;
+        int[] dp = new int[x + 1];
+        for(int target = 0; target <= x; target++) {
+            if(target % num[0] == 0)
+                dp[target] = target / num[0];
+            else
+                dp[target] = (int)1e9;
+        }
+        for(int index = 1; index < n; index++) {
+            int[] temp = new int[x + 1];
+            for(int target = 0; target <= x; target++) {
+                int not_take = dp[target];
+                int take = Integer.MAX_VALUE;
+                if(num[index] <= target) {
+                    take = 1 + temp[target - num[index]];
+                }
+                temp[target] = Math.min(take, not_take);
+
+            }
+            dp = temp.clone();
+        }
+        return dp[x] >= 1e9 ? -1 : dp[x];
+    }
+}

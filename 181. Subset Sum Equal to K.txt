@@ -1,0 +1,94 @@
+/*
+Memoization :
+TC : O(n * k)
+SC : O(n * k) + O(n)(RecStack)
+k = target
+*/
+
+import java.util.*;
+public class Solution {
+    public static boolean subsetSumToK(int n, int k, int arr[]){
+        int[][] dp = new int[n][k + 1];
+        for(int[] i : dp)
+            Arrays.fill(i, -1);
+        return sum(n - 1, k, arr, dp) == 1 ? true : false;
+    }
+    
+    public static int sum(int index, int target, int[] arr, int[][] dp) {
+        if(target == 0)
+            return 1;
+        if(index == 0)
+            return arr[0] == target ? 1 : 0;
+        if(dp[index][target] != -1)
+            return dp[index][target] == 1 ? 1 : 0;
+        int not_take = sum(index - 1, target, arr, dp);
+        int take = 0;
+        if(target >= arr[index]) {
+            take = sum(index - 1, target - arr[index], arr, dp);
+        }
+        return dp[index][target] = take | not_take;
+        
+    }
+}
+
+
+/*
+Tabulation
+TC : O(n * k)
+SC : O(n * k)
+k = target
+*/
+
+import java.util.*;
+public class Solution {
+    public static boolean subsetSumToK(int n, int k, int arr[]){
+        int[][] dp = new int[n][k + 1];
+        for(int i = 0; i < n; i++)
+            dp[i][0] = 1;
+        if(arr[0] <= k)
+            dp[0][arr[0]] = 1;
+        for(int index = 1; index < n; index++) {
+            for(int target = 1; target <= k; target++) {
+                int not_take = dp[index - 1][target];
+                int take = 0;
+                if(target >= arr[index]) {
+                    take = dp[index - 1][target - arr[index]];
+                }
+                dp[index][target] = take | not_take;
+            }
+        }
+        return dp[n - 1][k] == 1 ? true : false;
+    }
+}
+
+
+/*
+Space Optimization 
+TC : O(n * k)
+SC : O(k)
+k = target
+*/
+
+import java.util.*;
+public class Solution {
+    public static boolean subsetSumToK(int n, int k, int arr[]){
+        int[] dp = new int[k + 1];
+        dp[0] = 1;
+        if(arr[0] <= k)
+            dp[arr[0]] = 1;
+        for(int index = 1; index < n; index++) {
+            int[] temp = new int[k + 1];
+            temp[0] = 1; //for each row, first col is 0 as set in tabulation using loop
+            for(int target = 1; target <= k; target++) {
+                int not_take = dp[target];
+                int take = 0;
+                if(target >= arr[index]) {
+                    take = dp[target - arr[index]];
+                }
+                temp[target] = take | not_take;
+            }
+            dp = temp.clone();
+        }
+        return dp[k] == 1 ? true : false;
+    }
+}

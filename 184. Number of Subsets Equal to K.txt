@@ -1,0 +1,89 @@
+/*
+Memoization
+TC : O(n * k)
+SC : O(n * k) + O(n)(RecStack)
+k = target
+*/
+
+import java.util.*;
+public class Solution {
+    public static int findWays(int num[], int tar) {
+        int n = num.length;
+        int[][] dp = new int[n][tar + 1];
+        for(int[] i : dp)
+            Arrays.fill(i, -1);
+        return countWays(n - 1, tar, num, dp);
+    }
+    
+    public static int countWays(int index, int target, int[] num, int[][] dp) {
+        if(target == 0)
+            return 1;
+        if(index == 0)
+            return num[0] == target ? 1 : 0;
+        if(dp[index][target] != -1)
+            return dp[index][target];
+        int not_take = countWays(index - 1, target, num, dp);
+        int take = 0;
+        if(num[index] <= target)
+            take = countWays(index - 1, target - num[index], num, dp);
+        return dp[index][target] = take + not_take;
+    }
+}
+
+/*
+Tabulation
+TC : O(n * k)
+SC : O(n * k)
+k = target
+*/
+
+public class Solution {
+    public static int findWays(int num[], int tar) {
+        int n =  num.length;
+        int[][] dp = new int[n][tar + 1];
+        for(int i = 0; i < n; i++)
+            dp[i][0] = 1;
+        if(num[0] <= tar)
+            dp[0][num[0]] = 1;
+        for(int index = 1; index < n; index++) {
+            for(int target = 1; target <= tar; target++) {
+                int not_take = dp[index - 1][target];
+                int take = 0;
+                if(num[index] <= target)
+                    take = dp[index - 1][target - num[index]];
+                dp[index][target] = take + not_take;
+            }
+        }
+        return dp[n - 1][tar];
+    }
+}
+
+/*
+Space Optimization
+TC : O(n * k)
+SC : O(k)
+k = target
+*/
+
+public class Solution {
+    public static int findWays(int num[], int tar) {
+        int n =  num.length;
+        int[] dp = new int[tar + 1];
+        dp[0] = 1;
+        if(num[0] <= tar)
+            dp[num[0]] = 1;
+        for(int index = 1; index < n; index++) {
+            int[] temp = new int[tar + 1];
+            temp[0] = 1; // as per base case for each index when target = 0, it is 1
+            for(int target = 1; target <= tar; target++) {
+                int not_take = dp[target];
+                int take = 0;
+                if(num[index] <= target)
+                    take = dp[target - num[index]];
+                temp[target] = take + not_take;
+            }
+            dp = temp.clone();
+        }
+        return dp[tar];
+    }
+}

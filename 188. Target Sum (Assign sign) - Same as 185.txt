@@ -1,0 +1,42 @@
+/* Same as |s1 - s2| = k
+Space Optimization
+TC : O(n * k)
+SC : O(k)
+k = (total_sum - d)/2
+*/
+
+public class Solution {
+    public static int targetSum(int n, int target, int[] arr) {
+    	return countPartitions(n, target, arr);
+    }
+    public static int countPartitions(int n, int d, int[] num) {
+        int total_sum = 0;
+        for(int i : num)
+            total_sum += i;
+        if(total_sum - d < 0 || (total_sum - d) % 2 == 1) // sum cannot be negatibe as arr[i] >= 0 and since arr[i] is integer sum cannot be in decimal hence should be even
+            return 0;
+        return findWays(num, (total_sum - d)/2);
+    }
+    public static int findWays(int num[], int tar) {
+        int n =  num.length;
+        int[] dp = new int[tar + 1];
+         if(num[0] == 0)//target == 0 and num[0] == 0, 2 ways(1 taking, 1 not_taking)
+            dp[0] = 2;//1st condtion of memoization
+        else //target == 0 and num[0] != 0, only 1 way
+            dp[0] = 1;
+        if(num[0] <= tar && num[0] != 0)// when target == num[0], nums[0] != 0 that conition covered bove
+            dp[num[0]] = 1;
+        for(int index = 1; index < n; index++) {
+            int[] temp = new int[tar + 1];
+            for(int target = 0; target <= tar; target++) {// here it should start from 0 beacuse in previous we have condtion for target = 0.
+                int not_take = dp[target];
+                int take = 0;
+                if(num[index] <= target)
+                    take = dp[target - num[index]];
+                temp[target] = (take + not_take);
+            }
+            dp = temp.clone();
+        }
+        return dp[tar];
+    }
+}

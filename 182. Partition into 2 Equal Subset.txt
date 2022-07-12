@@ -1,0 +1,43 @@
+/*
+Here used space optimized solution for other refer question no. 181
+TC : O(n * k)
+SC : O(k)
+k = total_sum_of_arr/2
+*/
+
+public class Solution {
+	public static boolean canPartition(int[] arr, int n) {
+        /*
+        2 Equal subset means, 1 subset sum will equal total_sum/2. 
+        So we will check whether we have subset of sum total_sum/2
+        if exist then other subset is bydefault of sum toatal_sum/2
+        */
+		int sum = 0;
+        for(int i : arr)
+            sum += i;
+        if(sum % 2 == 1)
+            return false;
+        return subsetSumToK(n, sum/2, arr);
+	}
+    
+    public static boolean subsetSumToK(int n, int k, int arr[]){
+        int[] dp = new int[k + 1];
+        dp[0] = 1;
+        if(arr[0] <= k)
+            dp[arr[0]] = 1;
+        for(int index = 1; index < n; index++) {
+            int[] temp = new int[k + 1];
+            temp[0] = 1; //for each row, first col is 0 as set in tabulation using loop
+            for(int target = 1; target <= k; target++) {
+                int not_take = dp[target];
+                int take = 0;
+                if(target >= arr[index]) {
+                    take = dp[target - arr[index]];
+                }
+                temp[target] = take | not_take;
+            }
+            dp = temp.clone();
+        }
+        return dp[k] == 1 ? true : false;
+    }
+}

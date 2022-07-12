@@ -1,0 +1,111 @@
+/*
+Memoization
+TC : O(n * maxWeight)
+SC : O(n * maxWeight) + O(n)(RecStack)
+*/
+
+import java.util.*;
+public class Solution{
+    static int knapsack(int[] weight, int[] value, int n, int maxWeight) {
+        int[][] dp = new int[n][maxWeight + 1];
+        for(int[] i: dp)
+            Arrays.fill(i, -1);
+        return totalSum(n - 1, weight, value, maxWeight, dp);
+    }
+    
+    public static int totalSum(int index, int[] weight, int[] value, int maxWeight, int[][] dp) {
+        if(index == 0) {
+            if(weight[0] <= maxWeight) {
+                return value[index];
+            }
+            else
+                return 0;
+        } 
+        if(dp[index][maxWeight] != -1)
+            return dp[index][maxWeight];
+        int not_take = totalSum(index - 1, weight, value, maxWeight, dp);
+        int take = Integer.MIN_VALUE;
+        if(weight[index] <= maxWeight)
+            take = value[index] + totalSum(index - 1, weight, value, maxWeight - weight[index], dp);
+        return dp[index][maxWeight] = Math.max(take, not_take);
+    }
+}
+
+/*
+Tabulation
+TC : O(n * maxWeight)
+SC : O(n * maxWeight)
+*/
+
+import java.util.*;
+public class Solution{
+    static int knapsack(int[] weight, int[] value, int n, int maxWeight) {
+        int[][] dp = new int[n][maxWeight + 1];
+        for(int i = weight[0]; i <= maxWeight; i++) {
+            dp[0][i] = value[0];
+        }
+        for(int index = 1; index < n; index++) {
+            for(int w = 0; w <= maxWeight; w++) {
+                int not_take = dp[index - 1][w];
+                int take = Integer.MIN_VALUE;
+                if(weight[index] <= w)
+                    take = value[index] + dp[index - 1][w - weight[index]];
+                dp[index][w] = Math.max(take, not_take);
+            }
+        }
+        return dp[n - 1][maxWeight];
+    }
+}
+
+/*
+Space Optimization (2 array)
+TC : O(n * maxWeight)
+SC : O(maxWeight)
+*/
+
+import java.util.*;
+public class Solution{
+    static int knapsack(int[] weight, int[] value, int n, int maxWeight) {
+        int[] dp = new int[maxWeight + 1];
+        for(int i = weight[0]; i <= maxWeight; i++)
+            dp[i] = value[0];
+        for(int index = 1; index < n; index++) {
+            int[] temp = new int[maxWeight + 1];
+            for(int w = 0; w <= maxWeight; w++) {
+                int not_take = dp[w];
+                int take = Integer.MIN_VALUE;
+                if(weight[index] <= w)
+                    take = value[index] + dp[w - weight[index]];
+                temp[w] = Math.max(take, not_take);
+            }
+            dp = temp.clone();
+        }
+        return dp[maxWeight];
+    }
+}
+
+
+/*
+Space Optimization (1 array)
+TC : O(n * maxWeight)
+SC : O(maxWeight)
+*/
+
+import java.util.*;
+public class Solution{
+    static int knapsack(int[] weight, int[] value, int n, int maxWeight) {
+        int[] dp = new int[maxWeight + 1];
+        for(int i = weight[0]; i <= maxWeight; i++)
+            dp[i] = value[0];
+        for(int index = 1; index < n; index++) {
+            for(int w = maxWeight; w >= 0; w--) {//here using single array will work because we will require previous state that can be done using dp and w - weight[index] will always lies on left side of dp array so we can start from right and can overwrite
+                int not_take = dp[w];
+                int take = Integer.MIN_VALUE;
+                if(weight[index] <= w)
+                    take = value[index] + dp[w - weight[index]];
+                dp[w] = Math.max(take, not_take);
+            }
+        }
+        return dp[maxWeight];
+    }
+}

@@ -1,0 +1,48 @@
+/*
+TC : O(n * k)
+SC : O(k)
+k = total_sum
+*/
+
+public class Solution {
+	public static int minSubsetSumDifference(int[] arr, int n) {
+
+        /*
+	Here we have used space optimized solution for subset having target (last row = all index, col = all targets)
+	Last row of dp array will tell us if for that particular target sum is possible or not. If yes then we can consider each true value as 	 	 	s1 and get s2 by subtracting it from total_sum and we can caltulate min of abs(s1 - s2)
+        */
+        int total_sum = 0;
+        for(int i : arr)
+            total_sum += i;
+        int k = total_sum;
+		int[] dp = new int[total_sum + 1];
+        dp[0] = 1;
+        if(arr[0] <= k)
+            dp[arr[0]] = 1;
+        for(int index = 1; index < n; index++) {
+            int[] temp = new int[k + 1];
+            temp[0] = 1; //for each row, first col is 0 as set in tabulation using loop
+            for(int target = 1; target <= k; target++) {
+                int not_take = dp[target];
+                int take = 0;
+                if(target >= arr[index]) {
+                    take = dp[target - arr[index]];
+                }
+                temp[target] = take | not_take;
+            }
+            dp = temp.clone();
+        }
+
+        int min = Integer.MAX_VALUE;
+        for(int i = 0; i <= total_sum/2 ; i++) {
+            if(dp[i] == 1) {
+                int sum1 = i;
+                int sum2 = total_sum - i;
+                int abs = Math.abs(sum1 - sum2);
+                min = Math.min(abs, min);
+            }
+        }
+        return min;
+	}
+    
+}

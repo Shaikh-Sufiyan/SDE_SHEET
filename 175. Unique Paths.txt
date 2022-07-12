@@ -1,0 +1,76 @@
+/*
+Memoization :
+TC : O(m * n)
+SC : ((m - 1) + (n - 1))(RecStack(longest Path)) + O(m * n) (dp)
+*/
+
+import java.util.* ;
+import java.io.*; 
+public class Solution {
+	public static int uniquePaths(int m, int n) {
+	    int[][] dp = new int[m][n];
+        for(int[] i : dp)
+            Arrays.fill(i, -1);
+        return countPath(m - 1, n - 1, dp);
+	}
+    
+    public static int countPath(int i, int j, int[][] dp) {
+        if(i == 0 && j == 0)
+            return 1;
+        if(i < 0 || j < 0)
+            return 0;
+        if(dp[i][j] != -1)
+            return dp[i][j];
+        int up = countPath(i - 1, j, dp);
+        int left = countPath(i, j - 1, dp);
+        return dp[i][j] = up + left;
+    }
+}
+
+/*
+Tabulation
+TC : O(m * n)
+SC : O(m * n) (dp)
+*/
+
+import java.util.* ;
+import java.io.*; 
+public class Solution {
+	public static int uniquePaths(int m, int n) {
+		int[][] dp = new int[m][n];
+        for(int i = 0; i < m; i++)
+            dp[i][0] = 1;
+        for(int i = 0; i < n; i++) 
+            dp[0][i] = 1;
+        for(int i = 1; i < m; i++) {
+            for(int j = 1; j < n; j++) {
+                dp[i][j] = dp[i - 1][j] + dp[i][j - 1];
+            }
+        }
+        return dp[m - 1][n - 1];
+	}
+}
+
+/*
+Space Optimization
+TC : O(m * n)
+SC : O(n) (dp)
+*/
+
+import java.util.* ;
+import java.io.*; 
+public class Solution {
+	public static int uniquePaths(int m, int n) {
+		int[] dp = new int[n];
+        Arrays.fill(dp, 1);
+        for(int i = 1; i < m; i++) {
+            int[] temp = new int[n];
+            temp[0] = 1;
+            for(int j = 1; j < n; j++) {
+                temp[j] = temp[j - 1] + dp[j]; //left + up respectively(req only left that is store in temp and up in dp)
+            }
+            dp = temp.clone();
+        }
+        return dp[n - 1];
+	}
+}

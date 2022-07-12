@@ -1,0 +1,111 @@
+/*
+Memoization :
+TC : O(n * m)
+SC : O(n * m) + O(n)(RecStack)
+*/
+
+import java.util.*;
+public class Solution {
+	public static int getMaxPathSum(int[][] matrix) {
+		int max = Integer.MIN_VALUE;
+        int n = matrix.length;
+        int m = matrix[0].length;
+        int[][] dp = new int[n][m];
+        for(int[] i: dp)
+            Arrays.fill(i, -1);
+        for(int i = 0; i < m; i++) {
+            int sum = getPath(n - 1, i, matrix, dp);
+            max = Math.max(sum, max);
+        }
+        return max;
+	}
+    
+    public static int getPath(int i, int j, int[][] matrix, int[][] dp) {
+        if(j < 0 || j >= matrix[0].length)
+            return (int)-1e9;
+        if(i == 0)
+            return matrix[i][j];
+        if(dp[i][j] != -1)
+            return dp[i][j];
+        int up = matrix[i][j] + getPath(i - 1, j, matrix, dp);
+        int ld = matrix[i][j] + getPath(i - 1, j - 1, matrix, dp);
+        int rd = matrix[i][j] + getPath(i - 1, j + 1, matrix, dp);
+        return dp[i][j] = Math.max(up, Math.max(ld, rd));
+    }
+}
+
+/*
+Tabulation :
+TC : O(n * m) + O(m)
+SC : O(n * m)
+*/
+
+public class Solution {
+	public static int getMaxPathSum(int[][] matrix) {
+        int n = matrix.length;
+        int m = matrix[0].length;
+		int[][] dp = new int[n][m];
+        for(int j = 0; j < m; j++)
+            dp[0][j] = matrix[0][j];
+        for(int i = 1; i < n; i++) {
+            for(int j = 0; j < m; j++) {
+                int up = matrix[i][j] + dp[i - 1][j];
+                int ld = matrix[i][j];
+                int rd = matrix[i][j];
+                if(j - 1 >= 0)
+                    ld += dp[i - 1][j - 1];
+                else 
+                    ld += (int)-1e9;
+                if(j + 1 < m)
+                    rd += dp[i - 1][j + 1];
+                else 
+                    rd += (int)-1e9;
+                dp[i][j] = Math.max(up, Math.max(ld, rd));
+            }
+        }
+        int ans = Integer.MIN_VALUE;
+        for(int j = 0; j < m; j++)
+            ans = Math.max(dp[n - 1][j], ans);
+        return ans;
+	}
+}
+
+/*
+Space Optimization :
+TC : O(n * m) + O(m)
+SC : O(m)
+*/
+
+
+public class Solution {
+	public static int getMaxPathSum(int[][] matrix) {
+        int n = matrix.length;
+        int m = matrix[0].length;
+		int[] dp = new int[m];
+        for(int j = 0; j < m; j++)
+            dp[j] = matrix[0][j];
+        for(int i = 1; i < n; i++) {
+            int[] temp = new int[m];
+            for(int j = 0; j < m; j++) {
+                int up = matrix[i][j] + dp[j];
+                int ld = matrix[i][j];
+                int rd = matrix[i][j];
+                if(j - 1 >= 0)
+                    ld += dp[j - 1];
+                else 
+                    ld += (int)-1e9;
+                if(j + 1 < m)
+                    rd += dp[j + 1];
+                else 
+                    rd += (int)-1e9;
+                temp[j] = Math.max(up, Math.max(ld, rd));
+            }
+            dp = temp.clone();
+        }
+        int ans = Integer.MIN_VALUE;
+        for(int j = 0; j < m; j++)
+            ans = Math.max(dp[j], ans);
+        return ans;
+	}
+}
+
