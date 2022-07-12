@@ -1,0 +1,110 @@
+/*
+Memoization
+TC : O(n * w)
+SC : O(n * w) + O(w)(RecStack)
+*/
+
+import java.util.*;
+public class Solution {
+    public static int unboundedKnapsack(int n, int w, int[] profit, int[] weight) {
+        int[][] dp = new int[n][w + 1];
+        for(int[] i : dp)
+            Arrays.fill(i, -1);
+        return findWays(n - 1, w, profit, weight, dp);
+    }
+    
+    public static int findWays(int index, int w, int[] profit, int[] weight, int[][] dp) {
+        if(index == 0) {
+                return (w / weight[0]) * profit[0];
+        }
+        if(dp[index][w] != -1)
+            return dp[index][w];
+        int not_take = findWays(index - 1, w, profit, weight, dp);
+        int take = Integer.MIN_VALUE;
+        if(weight[index] <= w) {
+            take = profit[index] + findWays(index, w - weight[index], profit, weight, dp);
+        }
+        return dp[index][w] = Math.max(take, not_take);
+    }
+}
+
+/*
+Tabulation
+TC : O(n * w)
+SC : O(n * w)
+*/
+
+import java.util.*;
+public class Solution {
+    public static int unboundedKnapsack(int n, int w, int[] profit, int[] weight) {
+        int[][] dp = new int[n][w + 1];
+        for(int i = 0; i <= w; i++)
+            dp[0][i] = (i / weight[0]) * profit[0];
+        for(int index = 1; index < n; index++) {
+            for(int maxWeight = 0; maxWeight <= w; maxWeight++) {
+                int not_take = dp[index - 1][maxWeight];
+                int take = Integer.MIN_VALUE;
+                if(weight[index] <= maxWeight) {
+                    take = profit[index] + dp[index][maxWeight - weight[index]];
+                }
+                dp[index][maxWeight] = Math.max(take, not_take);
+            }
+        }
+        return dp[n - 1][w];
+    }
+}
+
+/*
+Space Optimization
+TC : O(n * w)
+SC : O(w)
+*/
+
+import java.util.*;
+public class Solution {
+    public static int unboundedKnapsack(int n, int w, int[] profit, int[] weight) {
+        int[] dp = new int[w + 1];
+        for(int i = 0; i <= w; i++)
+            dp[i] = (i / weight[0]) * profit[0];
+        for(int index = 1; index < n; index++) {
+            int[] temp = new int[w + 1];
+            for(int maxWeight = 0; maxWeight <= w; maxWeight++) {
+                int not_take = dp[maxWeight];
+                int take = Integer.MIN_VALUE;
+                if(weight[index] <= maxWeight) {
+                    take = profit[index] + temp[maxWeight - weight[index]];
+                }
+                temp[maxWeight] = Math.max(take, not_take);
+            }
+            dp = temp.clone();
+        }
+        return dp[w];
+    }
+}
+
+
+/*
+Space Optimization - 1-D Array (easy logic, if not understood while revising just do dry run from tabualtion one or view video
+TC : O(n * w)
+SC : O(w)
+*/
+
+import java.util.*;
+public class Solution {
+    public static int unboundedKnapsack(int n, int w, int[] profit, int[] weight) {
+        int[] dp = new int[w + 1];
+        for(int i = 0; i <= w; i++)
+            dp[i] = (i / weight[0]) * profit[0];
+        for(int index = 1; index < n; index++) {
+            for(int maxWeight = 0; maxWeight <= w; maxWeight++) {
+                int not_take = dp[maxWeight];
+                int take = Integer.MIN_VALUE;
+                if(weight[index] <= maxWeight) {
+                    take = profit[index] + dp[maxWeight - weight[index]];
+                }
+                dp[maxWeight] = Math.max(take, not_take);
+            }
+        }
+        return dp[w];
+    }
+}

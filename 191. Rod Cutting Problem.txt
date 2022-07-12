@@ -1,0 +1,110 @@
+/*
+Memoization
+TC : O(n * n)
+SC : O(n * n) + O(n)(RecStack)
+*/
+
+import java.util.*;
+public class Solution {
+	public static int cutRod(int price[], int n) {
+        int len = price.length;
+        int[][] dp = new int[n][n + 1];
+        for(int[] i : dp)
+            Arrays.fill(i, -1);
+		return findWays(len - 1, n, price, dp);
+	}
+    
+    public static int findWays(int index, int len, int[] price, int[][] dp) {
+        if(index == 0) {
+            return len * price[0]; //index = 0 means rod_len = 1 so now remaining rod_len(len) can be divided into len/1 hence price will (len/1) * price
+        }
+        if(dp[index][len] != -1)
+            return dp[index][len];
+        int not_take = findWays(index - 1, len, price, dp);
+        int take = Integer.MIN_VALUE;
+        int rod_len = index + 1;
+        if(rod_len <= len)
+            take = price[index] + findWays(index, len - rod_len, price, dp);
+        return dp[index][len] = Math.max(take, not_take);
+    }
+} 
+
+/*
+Tabulation
+TC : O(n * n)
+SC : O(n * n)
+*/
+
+import java.util.*;
+public class Solution {
+	public static int cutRod(int price[], int n) {
+        int[][] dp = new int[n][n + 1];
+        for(int len = 0; len <= n; len++)
+            dp[0][len] = len * price[0];
+        for(int index = 1; index < n; index++) {
+            for(int len = 0; len <= n; len++) {
+                int not_take = dp[index - 1][len];
+                int take = Integer.MIN_VALUE;
+                int rod_len = index + 1;
+                if(rod_len <= len)
+                    take = price[index] + dp[index][len - rod_len];
+                dp[index][len] = Math.max(take, not_take);
+            }
+        }
+        return dp[n - 1][n];
+	}
+}
+
+/*
+Space Optimization
+TC : O(n * n)
+SC : O(n)
+*/
+
+import java.util.*;
+public class Solution {
+	public static int cutRod(int price[], int n) {
+        int[] dp = new int[n + 1];
+        for(int len = 0; len <= n; len++)
+            dp[len] = len * price[0];
+        for(int index = 1; index < n; index++) {
+            int[] temp = new int[n + 1];
+            for(int len = 0; len <= n; len++) {
+                int not_take = dp[len];
+                int take = Integer.MIN_VALUE;
+                int rod_len = index + 1;
+                if(rod_len <= len)
+                    take = price[index] + temp[len - rod_len];
+                temp[len] = Math.max(take, not_take);
+            }
+            dp = temp.clone();
+        }
+        return dp[n];
+	}
+}
+
+/*
+Space Optimization - 1-D Array
+TC : O(n * n)
+SC : O(n)
+*/
+
+import java.util.*;
+public class Solution {
+	public static int cutRod(int price[], int n) {
+        int[] dp = new int[n + 1];
+        for(int len = 0; len <= n; len++)
+            dp[len] = len * price[0];
+        for(int index = 1; index < n; index++) {
+            for(int len = 0; len <= n; len++) {
+                int not_take = dp[len];
+                int take = Integer.MIN_VALUE;
+                int rod_len = index + 1;
+                if(rod_len <= len)
+                    take = price[index] + dp[len - rod_len];
+                dp[len] = Math.max(take, not_take);
+            }
+        }
+        return dp[n];
+	}
+}
