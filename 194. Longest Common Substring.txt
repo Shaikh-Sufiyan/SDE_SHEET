@@ -1,0 +1,60 @@
+/* 
+Tabulation
+TC : O(n * m)
+SC : O(n * m)
+*/
+//Here we have use tabulation. We can further space optimized it
+public class Solution {
+	public static int lcs(String s, String t) {
+		int n = s.length();
+        int m = t.length();
+        int[][] dp = new int[n + 1][m + 1];
+        for(int index1 = 0; index1 <= n; index1++)
+            dp[index1][0] = 0;
+        for(int index2 = 0; index2 <= m; index2++)
+            dp[0][index2] = 0;
+        int ans = 0;
+        for(int index1 = 1; index1 <= n; index1++) {
+            for(int index2 = 1; index2 <= m; index2++) {
+                if(s.charAt(index1 - 1) == t.charAt(index2 - 1)) {
+                    dp[index1][index2] = 1 + dp[index1 -1][index2 - 1];
+                    ans = Math.max(ans, dp[index1][index2]);
+                }
+                else
+                    dp[index1][index2] = 0; // here we have put directly 0 because it is substring and we don't need to check whether we have same char in future using this char. If not match means can't take this one in LCS
+            }
+        }
+        return ans;// ans can lie anywhere in dp table hence calculating ans during building dp table and it should be max
+	}
+}
+
+
+/*
+Space Optimization
+TC : O(n * m)
+SC : O(m)
+*/
+
+public class Solution {
+	public static int lcs(String s, String t) {
+		int n = s.length();
+        int m = t.length();
+        int[] dp = new int[m + 1];
+        for(int index2 = 0; index2 <= m; index2++)
+            dp[index2] = 0;
+        int ans = 0;
+        for(int index1 = 1; index1 <= n; index1++) {
+            int[] temp = new int[m + 1];
+            for(int index2 = 1; index2 <= m; index2++) {
+                if(s.charAt(index1 - 1) == t.charAt(index2 - 1)) {
+                    temp[index2] = 1 + dp[index2 - 1];
+                    ans = Math.max(ans, temp[index2]);
+                }
+                else
+                    temp[index2] = 0; // here we have put directly 0 because it is substring and we don't need to check whether we have same char in future using this char. If not match means can't take this one in LCS
+            }
+            dp = temp.clone();
+        }
+        return ans;// ans can lie anywhere in dp table hence calculating ans during building dp table and it should be max
+	}
+}

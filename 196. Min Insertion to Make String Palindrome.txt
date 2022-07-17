@@ -1,0 +1,39 @@
+/* 
+Tabulation
+TC : O(n * n) 
+SC : O(n * n) 
+*/
+
+
+public class Solution {
+    public static int minInsertion(String str) {
+    	int len = str.length();
+        int lps = longestPalindromeSubseq(str);
+        return len - lps; //we find longest plindromic sunsequnce then we need insert more char = remaining character of string to make it palindrome
+    }
+    
+     public static int longestPalindromeSubseq(String s) {
+        StringBuilder rev = new StringBuilder(s);
+        String reverse = rev.reverse().toString();
+        return lcs(s, reverse);
+    }
+    
+    public static int lcs(String s, String t) {
+        int n = s.length();
+        int m = t.length();
+        int[][] dp = new int[n + 1][m + 1];
+        for(int index1 = 0; index1 <= n; index1++)
+            dp[index1][0] = 0;
+        for(int index2 = 0; index2 <= m; index2++)
+            dp[0][index2] = 0;
+        for(int index1 = 1; index1 <= n; index1++) {
+            for(int index2 = 1; index2 <= m; index2++) {
+                if(s.charAt(index1 - 1) == t.charAt(index2 - 1))
+                    dp[index1][index2] = 1 + dp[index1 -1][index2 - 1];
+                else
+                    dp[index1][index2] = 0 + Math.max(dp[index1][index2 - 1], dp[index1 - 1][index2]);
+            }
+        }
+        return dp[n][m];
+    }
+}

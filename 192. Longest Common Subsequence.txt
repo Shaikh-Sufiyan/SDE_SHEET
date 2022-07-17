@@ -1,0 +1,113 @@
+/* 
+Memoization
+TC : O(n * m)
+SC : O(n * m) + O(n + m)(RecStack)
+*/
+
+import java.util.*;
+public class Solution {
+
+	public static int lcs(String s, String t) {
+        int n = s.length();
+        int m = t.length();
+        int[][] dp = new int[n][m];
+        for(int[] i : dp)
+            Arrays.fill(i, -1);
+		return calculate(n - 1, m - 1, s, t, dp);
+    }
+    
+    public static int calculate(int index1, int index2, String s, String t, int[][] dp) {
+        if(index1 < 0 || index2 < 0)
+            return 0;
+        if(dp[index1][index2] != -1)
+            return dp[index1][index2];
+        if(s.charAt(index1) == t.charAt(index2))
+            return dp[index1][index2] = 1 + calculate(index1 -1, index2 - 1, s, t, dp);
+        return dp[index1][index2] = 0 + Math.max(calculate(index1, index2 - 1, s, t, dp), calculate(index1 - 1, index2, s, t, dp));
+    }
+
+}
+
+// Here we implemented using shifting of index to make tabulation easy
+
+import java.util.*;
+public class Solution {
+
+	public static int lcs(String s, String t) {
+        int n = s.length();
+        int m = t.length();
+        int[][] dp = new int[n + 1][m + 1];
+        for(int[] i : dp)
+            Arrays.fill(i, -1);
+		return calculate(n, m, s, t, dp);
+    }
+    
+    public static int calculate(int index1, int index2, String s, String t, int[][] dp) {
+        if(index1 == 0 || index2 == 0)
+            return 0;
+        if(dp[index1][index2] != -1)
+            return dp[index1][index2];
+        if(s.charAt(index1 - 1) == t.charAt(index2 - 1))
+            return dp[index1][index2] = 1 + calculate(index1 -1, index2 - 1, s, t, dp);
+        return dp[index1][index2] = 0 + Math.max(calculate(index1, index2 - 1, s, t, dp), calculate(index1 - 1, index2, s, t, dp));
+    }
+
+}
+
+/* 
+Tabulation
+TC : O(n * m)
+SC : O(n * m)
+*/
+
+import java.util.*;
+public class Solution {
+
+	public static int lcs(String s, String t) {
+        int n = s.length();
+        int m = t.length();
+        int[][] dp = new int[n + 1][m + 1];
+        for(int index1 = 0; index1 <= n; index1++)
+            dp[index1][0] = 0;
+        for(int index2 = 0; index2 <= m; index2++)
+            dp[0][index2] = 0;
+        for(int index1 = 1; index1 <= n; index1++) {
+            for(int index2 = 1; index2 <= m; index2++) {
+                if(s.charAt(index1 - 1) == t.charAt(index2 - 1))
+                    dp[index1][index2] = 1 + dp[index1 -1][index2 - 1];
+                else
+                    dp[index1][index2] = 0 + Math.max(dp[index1][index2 - 1], dp[index1 - 1][index2]);
+            }
+        }
+        return dp[n][m];
+    }
+}
+
+/* 
+Space Optimization
+TC : O(n * m)
+SC : O(m)
+*/
+
+import java.util.*;
+public class Solution {
+
+	public static int lcs(String s, String t) {
+        int n = s.length();
+        int m = t.length();
+        int[] dp = new int[m + 1];
+        for(int index2 = 0; index2 <= m; index2++)
+            dp[index2] = 0;
+        for(int index1 = 1; index1 <= n; index1++) {
+            int[] temp = new int[m + 1];
+            for(int index2 = 1; index2 <= m; index2++) {
+                if(s.charAt(index1 - 1) == t.charAt(index2 - 1))
+                    temp[index2] = 1 + dp[index2 - 1];
+                else
+                    temp[index2] = 0 + Math.max(temp[index2 - 1], dp[index2]);
+            }
+            dp = temp.clone();
+        }
+        return dp[m];
+    }
+}

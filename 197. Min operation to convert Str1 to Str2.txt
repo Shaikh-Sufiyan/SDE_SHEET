@@ -1,0 +1,35 @@
+/*
+Tabulation
+TC : O(n * m)
+SC : O(n * m)
+*/
+
+//Here we use tabulation one, you can further space optimized it(in LCS function)
+public class Solution {
+    public static int canYouMake(String str, String ptr) {
+        int n = str.length();
+        int m = ptr.length();
+        int lcs = lcs(str, ptr);
+        return (n + m - 2 * lcs); 
+    }
+    
+    public static int lcs(String s, String t) {
+        int n = s.length();
+        int m = t.length();
+        int[][] dp = new int[n + 1][m + 1];
+        for(int index1 = 0; index1 <= n; index1++)
+            dp[index1][0] = 0;
+        for(int index2 = 0; index2 <= m; index2++)
+            dp[0][index2] = 0;
+        for(int index1 = 1; index1 <= n; index1++) {
+            for(int index2 = 1; index2 <= m; index2++) {
+                if(s.charAt(index1 - 1) == t.charAt(index2 - 1))
+                    dp[index1][index2] = 1 + dp[index1 -1][index2 - 1];
+                else
+                    dp[index1][index2] = 0 + Math.max(dp[index1][index2 - 1], dp[index1 - 1][index2]);
+            }
+        }
+        return dp[n][m];
+    }
+
+}
